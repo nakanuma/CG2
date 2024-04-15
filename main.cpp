@@ -16,7 +16,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// DirectX初期化処理
 	dxBase = DirectXBase::GetInstance();
-	dxBase->InitializeDXGIDevice();
+	dxBase->InitializeDXGIDevice(); 
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (!Window::ProcessMessage()) {
