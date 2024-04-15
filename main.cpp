@@ -67,7 +67,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ShowWindow(hwnd, SW_SHOW);
 
 	// ログの出力
-	Log(Logger::ConvertString(L"test\n"));
+	Log(Logger::ConvertString(L"test\n")); 
 
 	MSG msg{};
 	// ウィンドウの×ボタンが押されるまでループ
