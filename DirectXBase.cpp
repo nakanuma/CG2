@@ -78,7 +78,7 @@ void DirectXBase::InitializeDXGIDevice([[maybe_unused]]bool enableDebugLayer)
 	assert(device_ != nullptr);
 	Log("Complete create D3D12Device!!!\n"); // 初期化完了のログを出す
 
-#ifdef _DEBUG
+#ifdef _DEBUG 
 	Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue = nullptr;
 	if (SUCCEEDED(device_->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
 		// ヤバイエラー時に止まる
