@@ -157,7 +157,7 @@ void DirectXBase::BeginFrame()
 	commandList_->ClearRenderTargetView(rtvHandles_[backBufferIndex], clearColor, 0, nullptr);
 }
 
-void DirectXBase::EndFrame()
+void DirectXBase::EndFrame() 
 {
 	HRESULT result = S_FALSE;
 
