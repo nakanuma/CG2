@@ -10,7 +10,7 @@
 #include "DirectXUtil.h"
 #include "MyMath.h"
 
-// Windowsアプリでのエントリーポイント(main関数)
+// Windowsアプリでのエントリーポイント(main関数) 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DirectXBase* dxBase = nullptr;
 
