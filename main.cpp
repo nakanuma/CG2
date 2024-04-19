@@ -101,7 +101,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		dxBase->GetCommandList().Get()->SetDescriptorHeaps(1, descriptorHeaps);
 
 		// ImGuiのフレーム開始処理
-		ImguiWrapper::NewFrame();
+		ImguiWrapper::NewFrame(); 
 
 		///
 		///	更新処理
