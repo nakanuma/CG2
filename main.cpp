@@ -346,7 +346,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("LightDirection", &directionalLightData->direction.x);
 		ImGui::DragFloat("Intensity", &directionalLightData->intensity);
 
-		ImGui::End();
+		ImGui::End(); 
 
 		//////////////////////////////////////////////////////
 
