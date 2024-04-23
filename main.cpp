@@ -204,7 +204,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// 三角形の色を変更できるようにする
 		ImGui::Begin("Triangle");
 		ImGui::ColorEdit4("TriangleColor", &materialData->x);
-		ImGui::End();
+		ImGui::End(); 
 
 
 
