@@ -40,7 +40,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ImguiWrapper::Initialize(dxBase->GetDevice().Get(), dxBase->GetSwapChainDesc().BufferCount, dxBase->GetRtvDesc().Format, TextureManager::GetInstance().srvHeap_.heap_.Get());
 
 	///
-	///	↓ ここから3Dオブジェクトの設定
+	///	↓ ここから3Dオブジェクトの設定 
 	/// 
 
 	// 球体の設定を行う
