@@ -238,7 +238,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//////////////////////////////////////////////////////
 
 		// 球体の頂点情報を更新
-		transform.rotate.y += 0.02f;
+		transform.rotate.y += 0.02f; 
 
 		Matrix worldMatrix = transform.MakeAffineMatrix();
 		Matrix viewMatrix = camera.MakeViewMatrix();
