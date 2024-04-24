@@ -36,7 +36,7 @@ struct DirectionalLight {
 	float intensity; // 輝度
 };
 
-// Windowsアプリでのエントリーポイント(main関数)
+// Windowsアプリでのエントリーポイント(main関数) 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DirectXBase* dxBase = nullptr;
 
