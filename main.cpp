@@ -25,7 +25,7 @@ struct Material {
 	int32_t enableLighting;
 	float padding[3];
 	Matrix uvTransform;
-};
+}; 
 
 struct TransformationMatrix {
 	Matrix WVP;
