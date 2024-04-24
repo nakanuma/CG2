@@ -332,7 +332,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// SRVのDescriptorTableの先頭を設定（Textureの設定）
 		TextureManager::SetDescriptorTable(2, dxBase->GetCommandList().Get(), modelData.material.textureHandle); // モデルデータに格納されたテクスチャを使用する
 		// 描画を行う（DrawCall/ドローコール）
-		dxBase->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
+		dxBase->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0); 
 
 		///
 		/// ↑ ここまで3Dオブジェクトの描画コマンド
