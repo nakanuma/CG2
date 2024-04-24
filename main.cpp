@@ -157,7 +157,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			uint32_t index = (latIndex * kSubdivision + lonIndex) * 6; // 経度のインデックスを加算して、その緯度内での頂点の位置を計算
 			indexData[index + 0] = start + 0; indexData[index + 1] = start + 1; indexData[index + 2] = start + 2;
 			indexData[index + 3] = start + 1; indexData[index + 4] = start + 3; indexData[index + 5] = start + 2;
-		}
+		} 
 	}
 
 
