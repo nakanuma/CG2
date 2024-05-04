@@ -140,7 +140,7 @@ void DirectXBase::InitializeDXGIDevice([[maybe_unused]]bool enableDebugLayer)
 		// エラー時に止まる
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
 		// 警告時に止まる
-		/*infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);*/
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
 
 		// 抑制するメッセージのID
 		D3D12_MESSAGE_ID denyIds[] = {
@@ -497,14 +497,14 @@ void DirectXBase::PostDraw()
 	commandQueue_->ExecuteCommandLists(1, commandLists);
 }
 
-Microsoft::WRL::ComPtr<ID3D12Device> DirectXBase::GetDevice()
+ID3D12Device* DirectXBase::GetDevice()
 {
-	return device_;
+	return device_.Get();
 }
 
-Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> DirectXBase::GetCommandList()
+ID3D12GraphicsCommandList* DirectXBase::GetCommandList()
 {
-	return commandList_;
+	return commandList_.Get();
 }
 
 DXGI_SWAP_CHAIN_DESC1 DirectXBase::GetSwapChainDesc()

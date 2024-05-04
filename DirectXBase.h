@@ -78,8 +78,8 @@ public:
 	void PostDraw();
 
 	// アクセッサ
-	Microsoft::WRL::ComPtr <ID3D12Device> GetDevice();
-	Microsoft::WRL::ComPtr <ID3D12GraphicsCommandList> GetCommandList();
+	ID3D12Device* GetDevice();
+	ID3D12GraphicsCommandList* GetCommandList();
 	DXGI_SWAP_CHAIN_DESC1 GetSwapChainDesc();
 	D3D12_RENDER_TARGET_VIEW_DESC GetRtvDesc();
 
