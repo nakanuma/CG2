@@ -16,8 +16,12 @@ int TextureManager::Load(const std::string& filePath, ID3D12Device* device)
 	// Textureを読んで転送する
 	DirectX::ScratchImage mipImages = GetInstance().LoadTexture(filePath);
 	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-	Microsoft::WRL::ComPtr<ID3D12Resource> textureResource = TextureManager::GetInstance().CreateTextureResource(device, metadata);
-	TextureManager::GetInstance().UploadTextureData(textureResource.Get(), mipImages);
+	
+	// リソースの配列に保存
+	Microsoft::WRL::ComPtr<ID3D12Resource>& targetResource = GetInstance().texResources[GetInstance().index_];
+	targetResource = TextureManager::CreateTextureResource(device, metadata);
+
+	TextureManager::UploadTextureData(targetResource.Get(), mipImages);
 
 	// metaDataを基にSRVの設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
@@ -27,7 +31,7 @@ int TextureManager::Load(const std::string& filePath, ID3D12Device* device)
 	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
 
 	// SRVの生成
-	device->CreateShaderResourceView(textureResource.Get(), &srvDesc, GetInstance().srvHeap_.GetCPUHandle(GetInstance().index_));
+	device->CreateShaderResourceView(targetResource.Get(), &srvDesc, GetInstance().srvHeap_.GetCPUHandle(GetInstance().index_));
 
 	// SRVを作成するDescriptorHeapの場所を決める
 	GetInstance().index_++;

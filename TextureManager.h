@@ -4,6 +4,7 @@
 #include "StringUtil.h"
 #include "Logger.h"
 #include "DescriptorHeap.h"
+#include <array>
 
 class TextureManager final
 {
@@ -26,5 +27,6 @@ private:
 	static void UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
 
 	uint32_t index_ = 1;
+	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 128> texResources;
 };
 

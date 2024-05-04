@@ -143,7 +143,7 @@ void DirectXBase::InitializeDXGIDevice([[maybe_unused]]bool enableDebugLayer)
 		// エラー時に止まる
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
 		// 警告時に止まる
-		/*infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);*/
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
 
 		// 抑制するメッセージのID
 		D3D12_MESSAGE_ID denyIds[] = {
