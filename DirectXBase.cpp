@@ -8,10 +8,22 @@
 #include "StringUtil.h"
 #include "DirectXUtil.h"
 
+DirectXBase::~DirectXBase()
+{
+	CloseHandle(fenceEvent_);
+	dxcUtils_->Release();
+	dxcCompiler_->Release();
+	includeHandler_->Release();
+	vertexShaderBlob_->Release();
+	pixelShaderBlob_->Release();
+
+	Log("Released DirectXBase\n");
+}
+
 DirectXBase* DirectXBase::GetInstance()
 {
-	static DirectXBase instance;
-	return &instance;
+	static DirectXBase ins;
+	return &ins;
 }
 
 void DirectXBase::Initialize()
@@ -128,7 +140,7 @@ void DirectXBase::InitializeDXGIDevice([[maybe_unused]]bool enableDebugLayer)
 		// エラー時に止まる
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
 		// 警告時に止まる
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
+		/*infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);*/
 
 		// 抑制するメッセージのID
 		D3D12_MESSAGE_ID denyIds[] = {
@@ -503,4 +515,15 @@ DXGI_SWAP_CHAIN_DESC1 DirectXBase::GetSwapChainDesc()
 D3D12_RENDER_TARGET_VIEW_DESC DirectXBase::GetRtvDesc()
 {
 	return rtvDesc_;
+}
+
+D3DResourceLeakChecker::~D3DResourceLeakChecker()
+{
+	Microsoft::WRL::ComPtr<IDXGIDebug1> debug;
+	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug)))) {
+		Log("Reporting LiveObjects:\n");
+		debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+		debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
+		debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
+	}
 }
