@@ -21,6 +21,7 @@ struct VertexData {
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+	D3DResourceLeakChecker::GetInstance();
 	DirectXBase* dxBase = nullptr;
 
 	// COMの初期化
@@ -37,17 +38,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// SRV用のディスクリプタヒープを作成
 	DescriptorHeap srvDescriptorHeap;
-	srvDescriptorHeap.Create(dxBase->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
+	srvDescriptorHeap.Create(dxBase->GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
 
 	//////////////////////////////////////////////////////
 
 	// ImGuiの初期化
-	ImguiWrapper::Initialize(dxBase->GetDevice().Get(), dxBase->GetSwapChainDesc().BufferCount, dxBase->GetRtvDesc().Format, srvDescriptorHeap.heap_.Get());
+	ImguiWrapper::Initialize(dxBase->GetDevice(), dxBase->GetSwapChainDesc().BufferCount, dxBase->GetRtvDesc().Format, srvDescriptorHeap.heap_.Get());
 
 	//////////////////////////////////////////////////////
 
 	// 頂点リソースを作る
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = CreateBufferResource(dxBase->GetDevice().Get(), sizeof(VertexData) * 6);
+	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = CreateBufferResource(dxBase->GetDevice(), sizeof(VertexData) * 6);
 
 	// 頂点バッファビューを作成する
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
@@ -85,7 +86,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	vertexData[5].texcoord = { 1.0f, 1.0f };
 
 	// マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource = CreateBufferResource(dxBase->GetDevice().Get(), sizeof(Float4));
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource = CreateBufferResource(dxBase->GetDevice(), sizeof(Float4));
 	// マテリアルにデータを書き込む
 	Float4* materialData = nullptr;
 	// 書き込むためのアドレスを取得
@@ -95,7 +96,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	// WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
-	Microsoft::WRL::ComPtr<ID3D12Resource> wvpResource = CreateBufferResource(dxBase->GetDevice().Get(), sizeof(Matrix));
+	Microsoft::WRL::ComPtr<ID3D12Resource> wvpResource = CreateBufferResource(dxBase->GetDevice(), sizeof(Matrix));
 	// データを書き込む
 	Matrix* wvpData = nullptr;
 	// 書き込むためのアドレスを取得
@@ -114,8 +115,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// Textureを読んで転送する
 	DirectX::ScratchImage mipImages = TextureManager::LoadTexture("resources/uvChecker.png");
 	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-	ID3D12Resource* textureResource = TextureManager::CreateTextureResource(dxBase->GetDevice().Get(), metadata);
-	TextureManager::UploadTextureData(textureResource, mipImages);
+	Microsoft::WRL::ComPtr<ID3D12Resource> textureResource = TextureManager::CreateTextureResource(dxBase->GetDevice(), metadata);
+	TextureManager::UploadTextureData(textureResource.Get(), mipImages);
 
 	// metaDataを基にSRVの設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
@@ -129,10 +130,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = srvDescriptorHeap.GetGPUHandle(0);
 
 	// 先頭はImGuiが使っているのでその次を使う
-	textureSrvHandleCPU.ptr += dxBase->GetDevice().Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	textureSrvHandleGPU.ptr += dxBase->GetDevice().Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	textureSrvHandleCPU.ptr += dxBase->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	textureSrvHandleGPU.ptr += dxBase->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	// SRVの生成
-	dxBase->GetDevice().Get()->CreateShaderResourceView(textureResource, &srvDesc, textureSrvHandleCPU);
+	dxBase->GetDevice()->CreateShaderResourceView(textureResource.Get(), &srvDesc, textureSrvHandleCPU);
 
 	//////////////////////////////////////////////////////
 
@@ -145,7 +146,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// 描画用のDescriptorHeapの設定
 		ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap.heap_.Get() };
-		dxBase->GetCommandList().Get()->SetDescriptorHeaps(1, descriptorHeaps);
+		dxBase->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 
 		// ImGuiのフレーム開始処理
 		ImguiWrapper::NewFrame();
@@ -196,7 +197,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//////////////////////////////////////////////////////
 
 		// ImGuiの内部コマンドを生成する
-		ImguiWrapper::Render(dxBase->GetCommandList().Get());
+		ImguiWrapper::Render(dxBase->GetCommandList());
 		// 描画後処理
 		dxBase->PostDraw();
 		// フレーム終了処理
