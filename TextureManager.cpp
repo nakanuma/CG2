@@ -17,8 +17,8 @@ int TextureManager::Load(const std::string& filePath, ID3D12Device* device)
 	// Textureを読んで転送する
 	DirectX::ScratchImage mipImages = GetInstance().LoadTexture(filePath);
 	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-	ID3D12Resource* textureResource = TextureManager::GetInstance().CreateTextureResource(device, metadata);
-	TextureManager::GetInstance().UploadTextureData(textureResource, mipImages);
+	Microsoft::WRL::ComPtr<ID3D12Resource> textureResource = TextureManager::GetInstance().CreateTextureResource(device, metadata);
+	TextureManager::GetInstance().UploadTextureData(textureResource.Get(), mipImages);
 
 	// metaDataを基にSRVの設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
@@ -28,7 +28,7 @@ int TextureManager::Load(const std::string& filePath, ID3D12Device* device)
 	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
 
 	// SRVの生成
-	device->CreateShaderResourceView(textureResource, &srvDesc, GetInstance().srvHeap_.GetCPUHandle(GetInstance().index_));
+	device->CreateShaderResourceView(textureResource.Get(), &srvDesc, GetInstance().srvHeap_.GetCPUHandle(GetInstance().index_));
 
 	// SRVを作成するDescriptorHeapの場所を決める
 	GetInstance().index_++;
@@ -68,7 +68,7 @@ DirectX::ScratchImage TextureManager::LoadTexture(const std::string& filePath)
 	return mipImages;
 }
 
-ID3D12Resource* TextureManager::CreateTextureResource(ID3D12Device* device, const DirectX::TexMetadata& metadata)
+Microsoft::WRL::ComPtr<ID3D12Resource> TextureManager::CreateTextureResource(ID3D12Device* device, const DirectX::TexMetadata& metadata)
 {
 	HRESULT result = S_FALSE;
 
@@ -89,7 +89,7 @@ ID3D12Resource* TextureManager::CreateTextureResource(ID3D12Device* device, cons
 	heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0; // プロセッサの近くに配置
 
 	// Resourceを生成する
-	ID3D12Resource* resource = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
 	result = device->CreateCommittedResource(
 		&heapProperties, // Heapの設定
 		D3D12_HEAP_FLAG_NONE, // Heapの特殊な設定
@@ -99,7 +99,7 @@ ID3D12Resource* TextureManager::CreateTextureResource(ID3D12Device* device, cons
 		IID_PPV_ARGS(&resource)); // 作成するResourceポインタへのポインタ
 	assert(SUCCEEDED(result));
 
-	return resource;
+	return std::move(resource);
 }
 
 void TextureManager::UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages)
