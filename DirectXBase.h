@@ -4,18 +4,33 @@
 #include <wrl.h>
 #include <cstdint>
 #include <dxcapi.h>
+#include <dxgidebug.h>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxcompiler.lib")
+#pragma comment(lib, "dxguid.lib")
 
 // MyClass
 #include "MyWindow.h"
 #include "DescriptorHeap.h"
 
+// リソースリークチェック
+struct D3DResourceLeakChecker {
+	~D3DResourceLeakChecker();
+public:
+	static D3DResourceLeakChecker* GetInstance() {
+		static D3DResourceLeakChecker ins;
+		return &ins;
+	}
+};
+
 class DirectXBase
 {
 public:
+	// デストラクタ
+	~DirectXBase();
+
 	// シングルトンインスタンスの取得
 	static DirectXBase* GetInstance();
 
