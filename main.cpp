@@ -21,6 +21,7 @@ struct VertexData {
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+	D3DResourceLeakChecker::GetInstance();
 	DirectXBase* dxBase = nullptr;
 
 	// COMの初期化
